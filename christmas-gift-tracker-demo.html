@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="midnight" data-font="serif">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frosted Midnight · Christmas Gift Tracker (Free Demo)</title>
+<style>
+/* ============ FROSTED MIDNIGHT IDENTITY · THEMES ============ */
+:root{
+  --r-sm:10px; --r-md:16px; --r-lg:22px;
+  --topbar-h:64px;
+}
+/* Frosted Midnight — light default: deep navy + silver */
+[data-theme="midnight"]{
+  --bg:#F5F7FA; --bg-soft:#E9EEF5; --card:#FFFFFF; --card-soft:#F8FAFD;
+  --ink:#1B2B44; --ink-soft:#55677F; --ink-faint:#8FA0B5;
+  --line:#D6DEE9; --line-soft:#E4EAF2;
+  --accent:#23456E; --accent-deep:#16294A; --accent-soft:#DCE6F2; --accent-ghost:#EAF0F8;
+  --gold:#9AA9BC; --gold-deep:#6E7F95; --gold-soft:#E9EEF5; --gold-ghost:#F2F5F9;
+  --good:#4E8F5E; --good-soft:#DCEEDD; --warn:#B98A1F; --warn-soft:#F7ECD2; --bad:#C05B5B; --bad-soft:#F7DEDE;
+  --input-bg:#F8FAFD; --shadow-color:27,43,68;
+}
+/* Sugar Plum — light: plum + rose */
+[data-theme="plum"]{
+  --bg:#FAF4F7; --bg-soft:#F3E4EC; --card:#FFFFFF; --card-soft:#FDF8FA;
+  --ink:#46223A; --ink-soft:#7C5568; --ink-faint:#A98CA0;
+  --line:#E7CFD9; --line-soft:#F0DCE4;
+  --accent:#7A2E52; --accent-deep:#5A1F3D; --accent-soft:#F2DAE4; --accent-ghost:#F9ECF1;
+  --gold:#B76E8B; --gold-deep:#8F4F66; --gold-soft:#F6E3EA; --gold-ghost:#FBF0F4;
+  --good:#4E8F5E; --good-soft:#DCEEDD; --warn:#B98A1F; --warn-soft:#F7ECD2; --bad:#C05B5B; --bad-soft:#F7DEDE;
+  --input-bg:#FDF8FA; --shadow-color:70,34,58;
+}
+/* Arctic Glow — light cool: ice blue + silver */
+[data-theme="arctic"]{
+  --bg:#F2F8FB; --bg-soft:#E2EFF6; --card:#FFFFFF; --card-soft:#F7FBFE;
+  --ink:#1E3A4C; --ink-soft:#56707F; --ink-faint:#8AA2B0;
+  --line:#CFDEE8; --line-soft:#DFEAF2;
+  --accent:#2E6E8E; --accent-deep:#1E4E68; --accent-soft:#D8EAF3; --accent-ghost:#EAF3F9;
+  --gold:#8FA9BC; --gold-deep:#647E92; --gold-soft:#E6EEF4; --gold-ghost:#F1F5F9;
+  --good:#4E8F5E; --good-soft:#DCEEDD; --warn:#B98A1F; --warn-soft:#F7ECD2; --bad:#C05B5B; --bad-soft:#F7DEDE;
+  --input-bg:#F7FBFE; --shadow-color:30,58,76;
+}
+/* Starlit Night — dark */
+[data-theme="starlit"]{
+  --bg:#0E1522; --bg-soft:#141D2E; --card:#19243A; --card-soft:#1F2C44;
+  --ink:#EDF1F7; --ink-soft:#A9B7CC; --ink-faint:#6E7E95;
+  --line:#2A3A55; --line-soft:#22304A;
+  --accent:#8FA9CC; --accent-deep:#B4C6DE; --accent-soft:#24344F; --accent-ghost:#1D2A42;
+  --gold:#C2CFE2; --gold-deep:#DCE4F0; --gold-soft:#2C3A52; --gold-ghost:#253349;
+  --good:#8FC79B; --good-soft:#2C4633; --warn:#D9A94F; --warn-soft:#4A3A1E; --bad:#DE8484; --bad-soft:#4E2A2A;
+  --input-bg:#141D2E; --shadow-color:0,0,0;
+}
+/* ============ FONTS ============ */
+[data-font="serif"]{ --font-body:Georgia,'Times New Roman',serif; --font-display:Georgia,'Times New Roman',serif; }
+[data-font="sans"]{ --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; --font-display:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
+[data-font="elegant"]{ --font-body:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif; --font-display:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif; }
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--font-body); background:var(--bg); color:var(--ink);
+  min-height:100vh; transition:background .35s ease,color .35s ease;
+  padding-top:var(--topbar-h);
+}
+::selection{background:var(--gold-soft)}
+h1,h2,h3,.display{font-family:var(--font-display);letter-spacing:-.01em}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:15px;color:var(--ink);background:var(--input-bg);
+  border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;width:100%;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+label{font-size:13px;font-weight:600;color:var(--ink-soft);display:block;margin:0 0 6px}
+/* ============ TOPBAR ============ */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--topbar-h);z-index:100;
+  display:flex;align-items:center;gap:14px;padding:0 20px;
+  background:rgba(255,255,255,.88);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line-soft);
+}
+[data-theme="starlit"] .topbar{background:rgba(20,29,46,.88)}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-mark{width:38px;height:38px;border-radius:12px;flex:none;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;font-size:19px;
+  box-shadow:0 1px 2px rgba(27,43,68,.06),0 10px 28px -8px rgba(27,43,68,.14)}
+.brand-name{font-family:var(--font-display);font-weight:700;font-size:17px;white-space:nowrap}
+.brand-name small{display:block;font-family:var(--font-body);font-weight:400;font-size:11px;color:var(--ink-faint);letter-spacing:.14em;text-transform:uppercase}
+.topbar-spacer{flex:1}
+.theme-dots{display:flex;gap:8px;align-items:center}
+.theme-dot{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;position:relative;transition:transform .18s}
+.theme-dot:hover{transform:scale(1.12)}
+.theme-dot.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.theme-dot[data-set-theme="midnight"]{background:linear-gradient(135deg,#23456E 50%,#C9D4E2 50%)}
+.theme-dot[data-set-theme="plum"]{background:linear-gradient(135deg,#7A2E52 50%,#E9B8C9 50%)}
+.theme-dot[data-set-theme="arctic"]{background:linear-gradient(135deg,#2E6E8E 50%,#E8F4FA 50%)}
+.theme-dot[data-set-theme="starlit"]{background:linear-gradient(135deg,#0E1522 50%,#8FA9CC 50%)}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  display:grid;place-items:center;font-size:17px;color:var(--ink-soft);transition:all .2s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent-deep);transform:translateY(-1px)}
+.font-picker{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.font-picker button{border:none;background:transparent;padding:8px 11px;font-size:14px;color:var(--ink-faint)}
+.font-picker button.active{background:var(--accent-soft);color:var(--accent-deep)}
+.font-picker button[data-set-font="serif"]{font-family:Georgia,serif}
+.font-picker button[data-set-font="sans"]{font-family:-apple-system,sans-serif}
+.font-picker button[data-set-font="elegant"]{font-family:'Palatino Linotype',serif;font-style:italic}
+/* ============ NAV TABS ============ */
+.navtabs{position:sticky;top:var(--topbar-h);z-index:90;background:rgba(245,247,250,.92);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft);
+  display:flex;gap:4px;padding:10px 20px;overflow-x:auto}
+[data-theme="starlit"] .navtabs{background:rgba(14,21,34,.92)}
+.navtab{border:none;background:transparent;padding:10px 16px;border-radius:var(--r-sm);font-size:14.5px;font-weight:600;
+  color:var(--ink-soft);white-space:nowrap;transition:all .2s;border-bottom:2px solid transparent}
+.navtab:hover{color:var(--ink);background:var(--card-soft)}
+.navtab.active{color:var(--accent-deep);background:var(--accent-soft);border-bottom-color:var(--accent)}
+/* ============ LAYOUT ============ */
+.wrap{max-width:1120px;margin:0 auto;padding:26px 20px 90px}
+.view{display:none;animation:fadeUp .4s ease}
+.view.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.page-title{font-size:30px;margin:6px 0 4px}
+.page-sub{color:var(--ink-soft);font-size:15.5px;margin-bottom:22px}
+.grid{display:grid;gap:16px}
+.grid.c2{grid-template-columns:repeat(2,1fr)}
+.grid.c3{grid-template-columns:repeat(3,1fr)}
+.grid.c4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.grid.c4{grid-template-columns:repeat(2,1fr)}.grid.c3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid.c2,.grid.c3,.grid.c4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line-soft);border-radius:var(--r-lg);padding:20px;
+  box-shadow:0 1px 2px rgba(27,43,68,.06),0 10px 28px -8px rgba(27,43,68,.10)}
+.card h3{font-size:16.5px;margin-bottom:12px}
+.stat-num{font-family:var(--font-display);font-size:34px;font-weight:700;line-height:1.1}
+.stat-lab{font-size:13px;color:var(--ink-soft);margin-top:4px}
+.stat-sub{font-size:12.5px;color:var(--ink-faint);margin-top:2px}
+.prog{height:10px;border-radius:99px;background:var(--bg-soft);overflow:hidden;margin-top:10px}
+.prog>div{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-deep));transition:width .5s ease}
+.prog.gold>div{background:linear-gradient(90deg,var(--gold-deep),var(--gold))}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:var(--r-sm);
+  padding:11px 18px;font-size:14.5px;font-weight:700;transition:all .2s;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-deep));color:#fff;
+  box-shadow:0 1px 2px rgba(27,43,68,.06),0 10px 28px -8px rgba(27,43,68,.14)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 2px 6px rgba(27,43,68,.09),0 18px 44px -12px rgba(27,43,68,.22)}
+.btn-ghost{background:var(--card);border:1px solid var(--line);color:var(--ink-soft)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent-deep)}
+.btn-sm{padding:7px 12px;font-size:13px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);
+  padding:10px 12px;border-bottom:1px solid var(--line);font-weight:700}
+td{padding:11px 12px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:var(--card-soft)}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 11px;border-radius:99px;white-space:nowrap}
+.pill.idea{background:var(--gold-soft);color:var(--gold-deep)}
+.pill.purchased{background:var(--accent-soft);color:var(--accent-deep)}
+.pill.wrapped{background:#E3EAF6;color:#23456E}
+.pill.delivered{background:var(--good-soft);color:var(--good)}
+.pill.shipped{background:var(--warn-soft);color:var(--warn)}
+.pill.intransit{background:var(--accent-soft);color:var(--accent-deep)}
+.pill.out{background:var(--warn-soft);color:var(--warn)}
+.row-actions{display:flex;gap:6px}
+.mini-btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:5px 9px;font-size:12.5px;color:var(--ink-soft)}
+.mini-btn:hover{border-color:var(--accent);color:var(--accent-deep)}
+.mini-btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+.empty{padding:34px 20px;text-align:center;color:var(--ink-faint);font-size:14.5px}
+.empty .big{font-size:34px;margin-bottom:8px}
+/* modal */
+.modal-back{position:fixed;inset:0;background:rgba(20,30,48,.45);z-index:200;display:none;align-items:center;justify-content:center;padding:18px;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.modal-back.open{display:flex;animation:fadeUp .25s ease}
+.modal{background:var(--card);border-radius:var(--r-lg);width:100%;max-width:520px;max-height:90vh;overflow:auto;
+  padding:24px;box-shadow:0 2px 6px rgba(27,43,68,.09),0 18px 44px -12px rgba(27,43,68,.22)}
+.modal h3{font-size:20px;margin-bottom:4px}
+.modal .msub{color:var(--ink-soft);font-size:14px;margin-bottom:18px}
+.field{margin-bottom:14px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--accent-deep);color:#fff;
+  padding:12px 22px;border-radius:99px;font-size:14px;font-weight:600;z-index:300;opacity:0;pointer-events:none;transition:all .3s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* countdown */
+.cd-row{display:flex;gap:10px;margin-top:12px}
+.cd-cell{flex:1;background:var(--card-soft);border:1px solid var(--line-soft);border-radius:var(--r-md);padding:12px 6px;text-align:center}
+.cd-num{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--accent-deep)}
+.cd-lab{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+/* bars */
+.bar-row{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:14px}
+.bar-row .blab{width:130px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-soft)}
+.bar-track{flex:1;height:9px;border-radius:99px;background:var(--bg-soft);position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-deep))}
+.bar-val{width:76px;flex:none;text-align:right;font-weight:700;font-size:13.5px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:26px 0 14px}
+.section-head h2{font-size:21px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.toolbar select,.toolbar input{width:auto;min-width:150px}
+.searchbar{max-width:280px}
+footer.app-foot{text-align:center;color:var(--ink-faint);font-size:12.5px;padding:34px 0 10px}
+@media(max-width:640px){.brand-name{display:none}.font-picker{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ===== LEDGERLOOPSTUDIO DEMO BAR ===== -->
+<div id="lls-demo-bar" style="position:fixed;top:0;left:0;right:0;z-index:999999;background:#23456E;color:#FFFFFF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;text-align:center;padding:9px 12px;box-shadow:0 2px 12px rgba(0,0,0,.18);line-height:1.4;">
+  <span style="margin-right:6px;">&#127876;</span> FREE DEMO &mdash; LedgerLoopStudio
+  <span style="opacity:.65;font-weight:400;margin:0 8px;">|</span>
+  <a href="https://www.etsy.com/shop/LedgerLoopStudio" target="_blank" rel="noopener" style="color:#FFFFFF;text-decoration:underline;text-underline-offset:2px;font-weight:700;">Get the full version on Etsy</a>
+  <span style="opacity:.65;font-weight:400;margin-left:8px;">(10 entries max in demo)</span><span id="demo-entry-counter" style="opacity:.85;font-weight:600;margin-left:12px;background:rgba(255,255,255,.2);padding:2px 10px;border-radius:10px;">0/10 entries used</span>
+</div>
+<script>
+(function(){
+  // Push body content below the demo bar so nothing is hidden
+  function padBody(){
+    var bar = document.getElementById('lls-demo-bar');
+    if (bar) document.body.style.paddingTop = bar.offsetHeight + 'px';
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', padBody);
+  else padBody();
+  window.addEventListener('resize', padBody);
+  setTimeout(padBody, 500);
+})();
+</script>
+<!-- ===== /DEMO BAR ===== -->
+
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">🎁</div>
+    <div class="brand-name">Gift Tracker<small>Christmas · LedgerLoop</small></div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <div class="theme-dots" id="themeDots" title="Theme">
+    <div class="theme-dot active" data-set-theme="midnight" title="Frosted Midnight"></div>
+    <div class="theme-dot" data-set-theme="plum" title="Sugar Plum"></div>
+    <div class="theme-dot" data-set-theme="arctic" title="Arctic Glow"></div>
+    <div class="theme-dot" data-set-theme="starlit" title="Starlit Night"></div>
+  </div>
+  <div class="font-picker" id="fontPicker" title="Font">
+    <button data-set-font="serif" class="active" title="Serif">Ag</button>
+    <button data-set-font="sans" title="Sans">Ag</button>
+    <button data-set-font="elegant" title="Elegant"><i>Ag</i></button>
+  </div>
+  <button class="icon-btn" id="darkToggle" title="Toggle dark mode">🌙</button>
+  <button class="icon-btn" id="exportBtn" title="Export backup (JSON)">⤓</button>
+  <button class="icon-btn" id="resetBtn" title="Reset demo data">↺</button>
+</header>
+
+<nav class="navtabs" id="navtabs">
+  <button class="navtab active" data-view="dashboard">🏠 Dashboard</button>
+  <button class="navtab" data-view="gifts">🎁 Gift List</button>
+  <button class="navtab" data-view="people">👥 Recipients</button>
+  <button class="navtab" data-view="shipping">📦 Shipping</button>
+  <button class="navtab" data-view="wrapping">🎀 Wrapping</button>
+  <button class="navtab" data-view="budget">💰 Budget</button>
+</nav>
+
+<main class="wrap">
+  <section class="view active" id="view-dashboard"></section>
+  <section class="view" id="view-gifts"></section>
+  <section class="view" id="view-people"></section>
+  <section class="view" id="view-shipping"></section>
+  <section class="view" id="view-wrapping"></section>
+  <section class="view" id="view-budget"></section>
+  <footer class="app-foot">Frosted Midnight · Christmas Gift Tracker — your data never leaves this browser.</footer>
+</main>
+
+<div class="modal-back" id="modalBack"><div class="modal" id="modalBox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const uid=()=>"id"+Math.random().toString(36).slice(2,9);
+const LSKEY="xmas-gift-tracker-v1";
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2200);}
+function save(){try{localStorage.setItem(LSKEY,JSON.stringify(S));}catch(e){}}
+function load(){try{const r=localStorage.getItem(LSKEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+</script>
+<script>
+"use strict";
+/* ================= DATA ================= */
+const GROUPS=["Family","Friends","Kids","Coworkers","Neighbors","Other"];
+const STATUSES=["idea","purchased","wrapped","delivered"];
+const STATUS_LABEL={idea:"Idea",purchased:"Purchased",wrapped:"Wrapped",delivered:"Delivered"};
+const SHIP_LABEL={none:"—",ordered:"Ordered",shipped:"Shipped",intransit:"In transit",out:"Out for delivery",delivered:"Delivered"};
+function sampleData(){
+  const R=(name,group,budget)=>({id:uid(),name,group,budget});
+  const recs=[
+    R("Mom","Family",150),R("Dad","Family",150),R("Emma (Sister)","Family",80),
+    R("Jake (Brother)","Family",80),R("Leo (Nephew)","Kids",60),R("Mia (Niece)","Kids",60),
+    R("Sarah (Friend)","Friends",50),R("Mike (Coworker)","Coworkers",30),R("Mrs. Chen","Neighbors",25)
+  ];
+  const byName=n=>recs.find(r=>r.name===n).id;
+  const G=(recipientId,name,store,price,status,hidingSpot,notes,tracking,shipStatus,deliveryDate,wrapPaper,cardMsg)=>(
+    {id:uid(),recipientId,name,store,price,status,hidingSpot:hidingSpot||"",notes:notes||"",
+     tracking:tracking||"",shipStatus:shipStatus||"none",deliveryDate:deliveryDate||"",
+     wrapPaper:wrapPaper||"",cardMsg:cardMsg||""});
+  return {
+    v:1,
+    totalBudget:1200,
+    recipients:recs,
+    gifts:[
+      G(byName("Mom"),"Cashmere Scarf","Nordstrom",89.99,"wrapped","Closet top shelf","Burgundy color — her favorite","", "none","","Silver snowflakes","Merry Christmas, Mom! Love you ❤"),
+      G(byName("Mom"),"Scented Candle Set","Amazon",34.50,"delivered","","","1Z8842XW039281","delivered","2026-12-18","Silver snowflakes",""),
+      G(byName("Dad"),"Whiskey Decanter Set","Amazon",74.00,"purchased","","Engraved initials","TBA992100381","intransit","","",""),
+      G(byName("Emma (Sister)"),"Ceramic Vase","Etsy",42.00,"wrapped","Under bed","Handmade, sage green","","none","","Gold stars","To my favorite sister!"),
+      G(byName("Emma (Sister)"),"Book: 'The Midnight Library'","Barnes & Noble",18.99,"delivered","","","940011120255","delivered","2026-12-15","",""),
+      G(byName("Jake (Brother)"),"Wireless Earbuds","Best Buy",59.99,"purchased","","","FDX77120933","shipped","","",""),
+      G(byName("Leo (Nephew)"),"LEGO Space Set","Target",49.99,"wrapped","Garage cabinet","Age 8+ set","","none","","Navy trees","Have a stellar Christmas, Leo! 🚀"),
+      G(byName("Mia (Niece)"),"Art Supply Kit","Michaels",32.00,"idea","","Watercolor set — check sale","","none","","",""),
+      G(byName("Sarah (Friend)"),"Wine & Cheese Basket","Local shop",45.00,"purchased","","Deliver in person Dec 23","","none","","Kraft + twine",""),
+      G(byName("Mike (Coworker)"),"Coffee Gift Card","Starbucks",25.00,"idea","","","", "none","","",""),
+      G(byName("Mrs. Chen"),"Holiday Cookies Tin","Bakery",22.00,"wrapped","Pantry","Homemade shortbread","","none","","Red plaid","Happy holidays!")
+    ],
+    wrap:[{id:uid(),name:"Silver snowflakes",qty:3},{id:uid(),name:"Gold stars",qty:2},
+          {id:uid(),name:"Navy trees",qty:4},{id:uid(),name:"Red plaid",qty:2},{id:uid(),name:"Kraft + twine",qty:5}],
+    settings:{theme:"midnight",font:"serif"}
+  };
+}
+let S=load()||sampleData();
+if(!S.v){S=sampleData();}
+function persist(){save();}
+/* ================= THEME / FONT / DARK ================= */
+function applyPrefs(){
+  document.documentElement.dataset.theme=S.settings.theme||"midnight";
+  document.documentElement.dataset.font=S.settings.font||"serif";
+  $$("#themeDots .theme-dot").forEach(d=>d.classList.toggle("active",d.dataset.setTheme===S.settings.theme));
+  $$("#fontPicker button").forEach(b=>b.classList.toggle("active",b.dataset.setFont===S.settings.font));
+  $("#darkToggle").textContent=S.settings.theme==="starlit"?"☀️":"🌙";
+}
+$("#themeDots").addEventListener("click",e=>{const d=e.target.closest("[data-set-theme]");if(!d)return;
+  S.settings.theme=d.dataset.setTheme;persist();applyPrefs();});
+$("#fontPicker").addEventListener("click",e=>{const b=e.target.closest("[data-set-font]");if(!b)return;
+  S.settings.font=b.dataset.setFont;persist();applyPrefs();});
+$("#darkToggle").addEventListener("click",()=>{
+  S.settings.theme=S.settings.theme==="starlit"?"midnight":"starlit";persist();applyPrefs();});
+$("#exportBtn").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="christmas-gift-tracker-backup.json";a.click();toast("Backup exported ✓");});
+$("#resetBtn").addEventListener("click",()=>{
+  if(confirm("Reset to the sample Christmas data? Your changes will be lost.")){
+    const prefs=S.settings;S=sampleData();S.settings=prefs;persist();applyPrefs();render();toast("Demo data restored");}});
+/* ================= NAV (render() is called — no blank views) ================= */
+let currentView="dashboard";
+function switchView(name){
+  currentView=name;
+  $$(".navtab").forEach(t=>t.classList.toggle("active",t.dataset.view===name));
+  $$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+name));
+  render();
+}
+$$(".navtab").forEach(t=>t.addEventListener("click",()=>{switchView(t.dataset.view);window.scrollTo({top:0,behavior:"smooth"});}));
+/* ================= DERIVED ================= */
+const recName=id=>(S.recipients.find(r=>r.id===id)||{name:"—"}).name;
+const recOf=g=>S.recipients.find(r=>r.id===g.recipientId)||{};
+const spentTotal=()=>S.gifts.filter(g=>g.status!=="idea").reduce((a,g)=>a+(+g.price||0),0);
+const countBy=st=>S.gifts.filter(g=>g.status===st).length;
+function personSpent(rid){return S.gifts.filter(g=>g.recipientId===rid&&g.status!=="idea").reduce((a,g)=>a+(+g.price||0),0);}
+function personBudget(rid){const r=S.recipients.find(x=>x.id===rid);return r?+r.budget||0:0;}
+function countdown(){const now=new Date();let x=new Date(now.getFullYear(),11,25);
+  if(now>x)x=new Date(now.getFullYear()+1,11,25);
+  const d=x-now;return{d:Math.floor(d/864e5),h:Math.floor(d/36e5)%24,m:Math.floor(d/6e4)%60};}
+/* ================= MODAL ================= */
+function openModal(html){$("#modalBox").innerHTML=html;$("#modalBack").classList.add("open");}
+function closeModal(){$("#modalBack").classList.remove("open");}
+$("#modalBack").addEventListener("click",e=>{if(e.target.id==="modalBack")closeModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+function fieldVal(id){return $("#"+id).value.trim();}
+</script>
+<script>
+"use strict";
+/* ================= RENDER DISPATCH ================= */
+function render(){
+  ({dashboard:renderDashboard,gifts:renderGifts,people:renderPeople,
+    shipping:renderShipping,wrapping:renderWrapping,budget:renderBudget})[currentView]();
+}
+/* ================= DASHBOARD ================= */
+function renderDashboard(){
+  const cd=countdown(),spent=spentTotal(),rem=Math.max(0,S.totalBudget-spent);
+  const total=S.gifts.length,ideas=countBy("idea");
+  const v=$("#view-dashboard");
+  v.innerHTML=`
+  <h1 class="page-title">🎄 Christmas Gift Dashboard</h1>
+  <p class="page-sub">Every gift, every dollar — beautifully under control.</p>
+  <div class="grid c4">
+    <div class="card"><div class="stat-num">${total}</div><div class="stat-lab">Total gifts tracked</div><div class="stat-sub">${ideas} still ideas</div></div>
+    <div class="card"><div class="stat-num">${countBy("purchased")+countBy("wrapped")+countBy("delivered")}</div><div class="stat-lab">Purchased</div><div class="stat-sub">${countBy("wrapped")} wrapped · ${countBy("delivered")} delivered</div></div>
+    <div class="card"><div class="stat-num">${money(spent)}</div><div class="stat-lab">Total spent</div>
+      <div class="prog gold"><div style="width:${Math.min(100,S.totalBudget?spent/S.totalBudget*100:0)}%"></div></div>
+      <div class="stat-sub">${money(rem)} remaining of ${money(S.totalBudget)}</div></div>
+    <div class="card"><div class="stat-num">${S.recipients.length}</div><div class="stat-lab">Recipients</div><div class="stat-sub">${GROUPS.filter(g=>S.recipients.some(r=>r.group===g)).length} groups</div></div>
+  </div>
+  <div class="grid c2" style="margin-top:16px">
+    <div class="card"><h3>⏳ Countdown to Christmas</h3>
+      <div class="cd-row">
+        <div class="cd-cell"><div class="cd-num">${cd.d}</div><div class="cd-lab">Days</div></div>
+        <div class="cd-cell"><div class="cd-num">${cd.h}</div><div class="cd-lab">Hours</div></div>
+        <div class="cd-cell"><div class="cd-num">${cd.m}</div><div class="cd-lab">Minutes</div></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary btn-sm" data-goto="gifts">＋ Add a gift</button>
+      <button class="btn btn-ghost btn-sm" data-goto="shipping">Track shipping →</button></div>
+    </div>
+    <div class="card"><h3>🎯 Next up</h3>${nextUpHtml()}</div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>👥 Spending per recipient</h3>${personBarsHtml()}</div>`;
+}
+function nextUpHtml(){
+  const items=[];
+  S.gifts.filter(g=>g.status==="idea").slice(0,3).forEach(g=>items.push(`Decide on <b>${esc(g.name)}</b> for ${esc(recName(g.recipientId))}`));
+  S.gifts.filter(g=>g.status==="purchased"&&g.shipStatus!=="delivered"&&g.tracking).slice(0,2).forEach(g=>items.push(`Check delivery of <b>${esc(g.name)}</b> (${esc(g.tracking)})`));
+  S.gifts.filter(g=>g.status==="purchased"&&!g.wrapPaper).slice(0,2).forEach(g=>items.push(`Wrap <b>${esc(g.name)}</b> for ${esc(recName(g.recipientId))}`));
+  if(!items.length)return `<p style="color:var(--ink-soft)">All caught up — pour some cocoa. ☕</p>`;
+  return `<ul style="padding-left:20px;display:grid;gap:8px;font-size:14.5px">${items.map(i=>`<li>${i}</li>`).join("")}</ul>`;
+}
+function personBarsHtml(){
+  if(!S.recipients.length)return `<div class="empty">No recipients yet.</div>`;
+  return S.recipients.map(r=>{
+    const sp=personSpent(r.id),b=personBudget(r.id),pct=b?Math.min(100,sp/b*100):0;
+    return `<div class="bar-row"><span class="blab">${esc(r.name)}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <span class="bar-val">${money(sp)} / ${money(b)}</span></div>`;
+  }).join("");
+}
+/* ================= GIFT LIST ================= */
+let giftFilter="all",giftSearch="";
+function renderGifts(){
+  const v=$("#view-gifts");
+  const list=S.gifts.filter(g=>(giftFilter==="all"||g.status===giftFilter)&&
+    (!giftSearch||(g.name+recName(g.recipientId)+(g.store||"")).toLowerCase().includes(giftSearch)));
+  v.innerHTML=`
+  <div class="section-head"><div><h1 class="page-title">🎁 Gift List</h1><p class="page-sub">Who gets what — and where it's hidden.</p></div>
+    <button class="btn btn-primary" data-add-gift>＋ Add gift</button></div>
+  <div class="toolbar">
+    <select id="gfStatus">${["all",...STATUSES].map(s=>`<option value="${s}"${s===giftFilter?" selected":""}>${s==="all"?"All statuses":STATUS_LABEL[s]}</option>`).join("")}</select>
+    <input class="searchbar" id="gfSearch" placeholder="🔍 Search gifts, people, stores…" value="${esc(giftSearch)}">
+  </div>
+  <div class="card" style="padding:6px 8px">${list.length?`
+    <table><thead><tr><th>Gift</th><th>For</th><th>Price</th><th>Status</th><th>Hidden</th><th></th></tr></thead><tbody>
+    ${list.map(g=>`<tr>
+      <td><b>${esc(g.name)}</b>${g.store?`<div style="font-size:12.5px;color:var(--ink-faint)">${esc(g.store)}</div>`:""}</td>
+      <td>${esc(recName(g.recipientId))}</td>
+      <td><b>${money(g.price)}</b></td>
+      <td><span class="pill ${g.status}">${STATUS_LABEL[g.status]}</span></td>
+      <td style="font-size:13px;color:var(--ink-soft)">${g.status==="idea"?"—":esc(g.hidingSpot||"—")}</td>
+      <td><div class="row-actions"><button class="mini-btn" data-edit-gift="${g.id}">Edit</button>
+      <button class="mini-btn danger" data-del-gift="${g.id}">✕</button></div></td></tr>`).join("")}
+    </tbody></table>`:`<div class="empty"><div class="big">🎁</div>No gifts match. Add your first gift above!</div>`}</div>`;
+  $("#gfStatus").addEventListener("change",e=>{giftFilter=e.target.value;render();});
+  $("#gfSearch").addEventListener("input",e=>{giftSearch=e.target.value.toLowerCase();render();const s=$("#gfSearch");s.focus();s.setSelectionRange(s.value.length,s.value.length);});
+}
+/* ================= RECIPIENTS ================= */
+function renderPeople(){
+  const v=$("#view-people");
+  v.innerHTML=`
+  <div class="section-head"><div><h1 class="page-title">👥 Recipients</h1><p class="page-sub">Groups and per-person budgets.</p></div>
+    <button class="btn btn-primary" data-add-person>＋ Add recipient</button></div>
+  <div class="grid c2">${GROUPS.map(gr=>{
+    const rs=S.recipients.filter(r=>r.group===gr);if(!rs.length)return "";
+    return `<div class="card"><h3>${esc(gr)} <span style="color:var(--ink-faint);font-weight:400">(${rs.length})</span></h3>
+    ${rs.map(r=>{const sp=personSpent(r.id),b=personBudget(r.id);
+      return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line-soft)">
+      <div style="flex:1"><b>${esc(r.name)}</b><div style="font-size:12.5px;color:var(--ink-soft)">${money(sp)} spent · ${money(b)} budget · ${S.gifts.filter(g=>g.recipientId===r.id).length} gifts</div></div>
+      <button class="mini-btn" data-edit-person="${r.id}">Edit</button>
+      <button class="mini-btn danger" data-del-person="${r.id}">✕</button></div>`;}).join("")}</div>`;
+  }).join("")}</div>
+  <div class="card" style="margin-top:16px"><h3>💰 Total Christmas gift budget</h3>
+    <div class="field-row" style="max-width:420px"><div class="field"><label>Total budget ($)</label>
+    <input type="number" id="totalBudget" min="0" step="1" value="${S.totalBudget}"></div></div>
+    <div class="btn-row"><button class="btn btn-primary btn-sm" id="saveBudget">Save budget</button></div></div>`;
+  $("#saveBudget").addEventListener("click",()=>{S.totalBudget=+$("#totalBudget").value||0;persist();render();toast("Budget saved ✓");});
+}
+/* ================= SHIPPING ================= */
+function renderShipping(){
+  const v=$("#view-shipping");
+  const tracked=S.gifts.filter(g=>g.tracking);
+  v.innerHTML=`
+  <h1 class="page-title">📦 Shipping Tracker</h1>
+  <p class="page-sub">Order numbers, carriers, and delivery dates in one place.</p>
+  <div class="card" style="padding:6px 8px">${tracked.length?`
+    <table><thead><tr><th>Gift</th><th>Tracking #</th><th>Status</th><th>Est. delivery</th><th></th></tr></thead><tbody>
+    ${tracked.map(g=>{const cls=g.shipStatus==="delivered"?"delivered":g.shipStatus==="out"?"out":g.shipStatus==="intransit"?"intransit":"shipped";
+      return `<tr><td><b>${esc(g.name)}</b><div style="font-size:12.5px;color:var(--ink-faint)">${esc(recName(g.recipientId))}${g.store?" · "+esc(g.store):""}</div></td>
+      <td style="font-family:monospace;font-size:13px">${esc(g.tracking)}</td>
+      <td><span class="pill ${cls}">${SHIP_LABEL[g.shipStatus]||"—"}</span></td>
+      <td>${esc(g.deliveryDate||"—")}</td>
+      <td><div class="row-actions"><button class="mini-btn" data-edit-gift="${g.id}">Update</button></div></td></tr>`;}).join("")}
+    </tbody></table>`:`<div class="empty"><div class="big">📦</div>No tracked orders yet. Add a tracking number when you edit a gift.</div>`}</div>
+  <div class="card" style="margin-top:16px"><h3>💡 Tip</h3>
+  <p style="font-size:14.5px;color:var(--ink-soft)">Order online gifts by <b>December 15</b> to beat the holiday shipping crunch. Anything later — choose in-store pickup.</p></div>`;
+}
+/* ================= WRAPPING ================= */
+function renderWrapping(){
+  const v=$("#view-wrapping");
+  const needWrap=S.gifts.filter(g=>g.status==="purchased"||g.status==="wrapped");
+  v.innerHTML=`
+  <div class="section-head"><div><h1 class="page-title">🎀 Wrapping Station</h1><p class="page-sub">Paper, presents, and personal messages.</p></div>
+    <button class="btn btn-primary" data-add-wrap>＋ Add wrapping paper</button></div>
+  <div class="grid c2">
+    <div class="card"><h3>🧻 Wrapping paper inventory</h3>
+      ${S.wrap.length?S.wrap.map(w=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line-soft)">
+        <div style="flex:1"><b>${esc(w.name)}</b><div style="font-size:12.5px;color:var(--ink-soft)">${w.qty} roll${w.qty===1?"":"s"} left</div></div>
+        <button class="mini-btn" data-wrap-minus="${w.id}">−</button>
+        <button class="mini-btn" data-wrap-plus="${w.id}">＋</button>
+        <button class="mini-btn danger" data-wrap-del="${w.id}">✕</button></div>`).join("")
+      :`<div class="empty">No wrapping paper logged yet.</div>`}</div>
+    <div class="card"><h3>🎁 Wrap queue</h3>
+      ${needWrap.length?needWrap.map(g=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line-soft)">
+        <div style="flex:1"><b>${esc(g.name)}</b><div style="font-size:12.5px;color:var(--ink-soft)">${esc(recName(g.recipientId))}${g.wrapPaper?" · "+esc(g.wrapPaper):""}${g.cardMsg?" · 💌 card written":""}</div></div>
+        <span class="pill ${g.status}">${STATUS_LABEL[g.status]}</span>
+        <button class="mini-btn" data-edit-gift="${g.id}">Edit</button></div>`).join("")
+      :`<div class="empty">Nothing waiting to be wrapped. 🎉</div>`}</div>
+  </div>`;
+}
+/* ================= BUDGET ================= */
+function renderBudget(){
+  const v=$("#view-budget");
+  const spent=spentTotal(),rem=Math.max(0,S.totalBudget-spent);
+  v.innerHTML=`
+  <h1 class="page-title">💰 Budget Overview</h1>
+  <p class="page-sub">Spent vs planned — per person and overall.</p>
+  <div class="grid c3">
+    <div class="card"><div class="stat-num">${money(S.totalBudget)}</div><div class="stat-lab">Total budget</div></div>
+    <div class="card"><div class="stat-num">${money(spent)}</div><div class="stat-lab">Spent (excl. ideas)</div>
+      <div class="prog"><div style="width:${Math.min(100,S.totalBudget?spent/S.totalBudget*100:0)}%"></div></div></div>
+    <div class="card"><div class="stat-num" style="color:${rem<0?"var(--bad)":"var(--good)"}">${money(rem)}</div><div class="stat-lab">Remaining</div></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>👥 Per-person: spent vs budget</h3>
+    ${S.recipients.length?S.recipients.map(r=>{const sp=personSpent(r.id),b=personBudget(r.id),over=b>0&&sp>b;
+      return `<div class="bar-row"><span class="blab">${esc(r.name)}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${b?Math.min(100,sp/b*100):0}%;${over?"background:var(--bad)":""}"></div></div>
+      <span class="bar-val">${money(sp)} / ${money(b)}${over?" ⚠️":""}</span></div>`;}).join("")
+    :`<div class="empty">No recipients yet.</div>`}</div>
+  <div class="card" style="margin-top:16px"><h3>📊 By status</h3>
+    <div class="grid c4">${STATUSES.map(s=>{const gs=S.gifts.filter(g=>g.status===s);
+      const t=gs.reduce((a,g)=>a+(+g.price||0),0);
+      return `<div><div class="stat-num" style="font-size:24px">${gs.length}</div>
+      <div class="stat-lab">${STATUS_LABEL[s]}</div><div class="stat-sub">${money(t)}</div></div>`;}).join("")}</div></div>`;
+}
+</script>
+<script>
+"use strict";
+/* ================= GLOBAL EVENT DELEGATION ================= */
+document.addEventListener("click",e=>{
+  const t=e.target;
+  const goto=t.closest("[data-goto]"); if(goto){switchView(goto.dataset.goto);window.scrollTo({top:0,behavior:"smooth"});return;}
+  if(t.closest("[data-add-gift]")){giftModal();return;}
+  if(t.closest("[data-add-person]")){personModal();return;}
+  if(t.closest("[data-add-wrap]")){wrapModal();return;}
+  const eg=t.closest("[data-edit-gift]"); if(eg){giftModal(eg.dataset.editGift);return;}
+  const dg=t.closest("[data-del-gift]"); if(dg){const g=S.gifts.find(x=>x.id===dg.dataset.delGift);
+    if(g&&confirm(`Delete "${g.name}"?`)){S.gifts=S.gifts.filter(x=>x.id!==g.id);persist();render();toast("Gift deleted");}return;}
+  const ep=t.closest("[data-edit-person]"); if(ep){personModal(ep.dataset.editPerson);return;}
+  const dp=t.closest("[data-del-person]"); if(dp){const r=S.recipients.find(x=>x.id===dp.dataset.delPerson);
+    if(r&&confirm(`Remove ${r.name}? Their gifts stay but become unassigned.`)){
+      S.recipients=S.recipients.filter(x=>x.id!==r.id);
+      S.gifts.forEach(g=>{if(g.recipientId===r.id)g.recipientId="";});
+      persist();render();toast("Recipient removed");}return;}
+  const wm=t.closest("[data-wrap-minus]"); if(wm){const w=S.wrap.find(x=>x.id===wm.dataset.wrapMinus);
+    if(w){w.qty=Math.max(0,w.qty-1);persist();render();}return;}
+  const wp=t.closest("[data-wrap-plus]"); if(wp){const w=S.wrap.find(x=>x.id===wp.dataset.wrapPlus);
+    if(w){w.qty++;persist();render();}return;}
+  const wd=t.closest("[data-wrap-del]"); if(wd){
+    if(confirm("Remove this wrapping paper?")){S.wrap=S.wrap.filter(x=>x.id!==wd.dataset.wrapDel);persist();render();toast("Removed");}return;}
+});
+/* ================= GIFT MODAL ================= */
+function giftModal(id){
+  const g=id?S.gifts.find(x=>x.id===id):null;
+  const recOpts=S.recipients.map(r=>`<option value="${r.id}"${g&&g.recipientId===r.id?" selected":""}>${esc(r.name)} (${esc(r.group)})</option>`).join("");
+  openModal(`<h3>${g?"Edit gift":"＋ Add gift"}</h3><p class="msub">Track it from idea to under the tree.</p>
+  <div class="field-row">
+    <div class="field"><label>Gift name</label><input id="mGiftName" value="${esc(g?.name||"")}" placeholder="e.g. Cashmere Scarf"></div>
+    <div class="field"><label>For</label><select id="mGiftRec">${recOpts||'<option value="">— add a recipient first —</option>'}</select></div>
+  </div>
+  <div class="field-row">
+    <div class="field"><label>Store</label><input id="mGiftStore" value="${esc(g?.store||"")}" placeholder="e.g. Amazon"></div>
+    <div class="field"><label>Price ($)</label><input id="mGiftPrice" type="number" min="0" step="0.01" value="${g?.price??""}"></div>
+  </div>
+  <div class="field-row">
+    <div class="field"><label>Status</label><select id="mGiftStatus">${STATUSES.map(s=>`<option value="${s}"${g&&g.status===s?" selected":""}>${STATUS_LABEL[s]}</option>`).join("")}</select></div>
+    <div class="field"><label>Hiding spot 🤫</label><input id="mGiftHide" value="${esc(g?.hidingSpot||"")}" placeholder="e.g. Closet top shelf"></div>
+  </div>
+  <div class="field"><label>Notes</label><input id="mGiftNotes" value="${esc(g?.notes||"")}" placeholder="Size, color, preferences…"></div>
+  <div class="field-row">
+    <div class="field"><label>Tracking number</label><input id="mGiftTrack" value="${esc(g?.tracking||"")}" placeholder="Optional"></div>
+    <div class="field"><label>Shipping status</label><select id="mGiftShip">${Object.keys(SHIP_LABEL).map(k=>`<option value="${k}"${g&&g.shipStatus===k?" selected":""}>${SHIP_LABEL[k]}</option>`).join("")}</select></div>
+  </div>
+  <div class="field-row">
+    <div class="field"><label>Est. delivery date</label><input id="mGiftDeliv" type="date" value="${esc(g?.deliveryDate||"")}"></div>
+    <div class="field"><label>Wrapping paper used</label><input id="mGiftWrap" list="wrapList" value="${esc(g?.wrapPaper||"")}" placeholder="e.g. Silver snowflakes">
+      <datalist id="wrapList">${S.wrap.map(w=>`<option value="${esc(w.name)}">`).join("")}</datalist></div>
+  </div>
+  <div class="field"><label>Card message 💌</label><textarea id="mGiftCard" rows="2" placeholder="What will you write in their card?">${esc(g?.cardMsg||"")}</textarea></div>
+  <div class="btn-row"><button class="btn btn-primary" id="mGiftSave">${g?"Save changes":"Add gift"}</button>
+  <button class="btn btn-ghost" id="mCancel">Cancel</button></div>`);
+  $("#mCancel").addEventListener("click",closeModal);
+  $("#mGiftSave").addEventListener("click",()=>{
+    const name=fieldVal("mGiftName");if(!name){toast("Give the gift a name first");return;}
+    const data={name,recipientId:$("#mGiftRec").value,store:fieldVal("mGiftStore"),
+      price:+$("#mGiftPrice").value||0,status:$("#mGiftStatus").value,
+      hidingSpot:fieldVal("mGiftHide"),notes:fieldVal("mGiftNotes"),tracking:fieldVal("mGiftTrack"),
+      shipStatus:$("#mGiftShip").value,deliveryDate:$("#mGiftDeliv").value,
+      wrapPaper:fieldVal("mGiftWrap"),cardMsg:fieldVal("mGiftCard")};
+    if(g){Object.assign(g,data);toast("Gift updated ✓");}
+    else{S.gifts.push({id:uid(),...data});toast("Gift added 🎁");}
+    persist();closeModal();render();
+  });
+}
+/* ================= PERSON MODAL ================= */
+function personModal(id){
+  const r=id?S.recipients.find(x=>x.id===id):null;
+  openModal(`<h3>${r?"Edit recipient":"＋ Add recipient"}</h3><p class="msub">Set a per-person budget to stay on track.</p>
+  <div class="field"><label>Name</label><input id="mPerName" value="${esc(r?.name||"")}" placeholder="e.g. Grandma"></div>
+  <div class="field-row">
+    <div class="field"><label>Group</label><select id="mPerGroup">${GROUPS.map(gr=>`<option${r&&r.group===gr?" selected":""}>${gr}</option>`).join("")}</select></div>
+    <div class="field"><label>Gift budget ($)</label><input id="mPerBudget" type="number" min="0" step="1" value="${r?.budget??50}"></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" id="mPerSave">${r?"Save":"Add recipient"}</button>
+  <button class="btn btn-ghost" id="mCancel">Cancel</button></div>`);
+  $("#mCancel").addEventListener("click",closeModal);
+  $("#mPerSave").addEventListener("click",()=>{
+    const name=fieldVal("mPerName");if(!name){toast("Enter a name first");return;}
+    const data={name,group:$("#mPerGroup").value,budget:+$("#mPerBudget").value||0};
+    if(r){Object.assign(r,data);toast("Recipient updated ✓");}
+    else{S.recipients.push({id:uid(),...data});toast("Recipient added 👥");}
+    persist();closeModal();render();
+  });
+}
+/* ================= WRAP MODAL ================= */
+function wrapModal(){
+  openModal(`<h3>＋ Add wrapping paper</h3><p class="msub">Keep your paper stash counted.</p>
+  <div class="field-row">
+    <div class="field"><label>Design / name</label><input id="mWrapName" placeholder="e.g. Silver snowflakes"></div>
+    <div class="field"><label>Rolls</label><input id="mWrapQty" type="number" min="1" step="1" value="1"></div>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" id="mWrapSave">Add</button>
+  <button class="btn btn-ghost" id="mCancel">Cancel</button></div>`);
+  $("#mCancel").addEventListener("click",closeModal);
+  $("#mWrapSave").addEventListener("click",()=>{
+    const name=fieldVal("mWrapName");if(!name){toast("Name the wrapping paper");return;}
+    S.wrap.push({id:uid(),name,qty:Math.max(1,+$("#mWrapQty").value||1)});
+    persist();closeModal();render();toast("Wrapping paper added 🎀");
+  });
+}
+/* ================= INIT ================= */
+applyPrefs();
+render();
+</script>
+
+<!-- ===== LEDGERLOOPSTUDIO DEMO ENTRY LIMIT (10) ===== -->
+<script>
+(function(){
+  var DEMO_LIMIT = 10;
+  var DEMO_MSG = "Demo limit reached (10 entries). Get the full version on Etsy for unlimited entries!";
+  var addCount = 0;
+  function isAddButton(el){
+    if (!el || !el.textContent) return false;
+    var t = el.textContent.trim().toLowerCase();
+    if (t.indexOf('theme') > -1 || t.indexOf('font') > -1 || t.indexOf('mode') > -1) return false;
+    var addWords = ['add', 'save', 'create'];
+    for (var i = 0; i < addWords.length; i++){
+      if (t === addWords[i] || t.indexOf(addWords[i]+' ') === 0) return true;
+    }
+    if (t === '+') return true;
+    return false;
+  }
+  function showMsg(){
+    try { if (typeof toast === 'function') toast(DEMO_MSG); else alert(DEMO_MSG); }
+    catch(e){ alert(DEMO_MSG); }
+  }
+  function updateCounter(){
+    var c = document.getElementById('demo-entry-counter');
+    if (c) c.textContent = addCount + '/' + DEMO_LIMIT + ' entries used';
+  }
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest ? e.target.closest('button,input[type="submit"],input[type="button"]') : null;
+    if (!btn || !isAddButton(btn)) return;
+    if (addCount >= DEMO_LIMIT) {
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      showMsg(); return false;
+    }
+    addCount++; updateCounter();
+  }, true);
+  document.addEventListener('submit', function(e){
+    if (addCount >= DEMO_LIMIT) {
+      e.preventDefault(); e.stopPropagation(); showMsg(); return false;
+    }
+    addCount++; updateCounter();
+  }, true);
+})();
+</script>
+<!-- ===== /DEMO LIMIT ===== -->
+
+</body>
+</html>
